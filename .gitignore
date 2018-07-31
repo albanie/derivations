@@ -13,3 +13,6 @@
 
 # python src
 *.pyc
+
+old-ideas/.build/
+differentials/.build/

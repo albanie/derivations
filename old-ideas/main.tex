@@ -6,9 +6,9 @@
 \usepackage{url}
 \usepackage{xspace}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage{tikz}
-\usetikzlibrary{positioning,calc,matrix,arrows}
-\usepackage{pgfplots}
+%\usepackage{tikz}
+%\usetikzlibrary{positioning,calc,matrix,arrows}
+%\usepackage{pgfplots}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{textcomp}
@@ -49,7 +49,7 @@
 %\newcommand{\bp}{\mathbf{p}}
 %\newcommand{\bfs}{\mathbf{s}}
 %\newcommand{\bfe}{\mathbf{e}}
-\newcommand{\samsays}[1]{\textcolor{RubineRed}{[S: #1]}}
+%\newcommand{\samsays}[1]{\textcolor{RubineRed}{[S: #1]}}
 
 %\newcommand{\argmin}{\operatornamewithlimits{argmin}}
 %\newcommand{\argmax}{\operatornamewithlimits{argmax}}
@@ -76,26 +76,26 @@
 \lstset{
 	%backgroundcolor=\color{lbcolor},
 	tabsize=4,
-	rulecolor=,
+	%rulecolor=,
 	language=matlab,
 	basicstyle=\small,
-	upquote=true,
-	columns=fullflexible,
-	showstringspaces=false,
+	%upquote=true,
+	%columns=fullflexible,
+	%showstringspaces=false,
 	extendedchars=true,
-	breaklines=false,
-	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	%breaklines=false,
+	%prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
 	%frame=single,
-	showtabs=false,
-	showspaces=false,
-	showstringspaces=false,
-	identifierstyle=\ttfamily,
+	%showtabs=false,
+	%showspaces=false,
+	%showstringspaces=false,
+	%identifierstyle=\ttfamily,
 	keywordstyle=\color[rgb]{0,0,1},
 	commentstyle=\itshape\color[rgb]{0.133,0.545,0.133},
 	stringstyle=\color[rgb]{0.627,0.126,0.941},
 }
-\lstMakeShortInline[columns=fullflexible, breaklines = true,
- breakatwhitespace = true]!
+%\lstMakeShortInline[columns=fullflexible, breaklines = true,
+% breakatwhitespace = true]!
 
 \title{Old Ideas for Applied Computer Vision}
 \author{
@@ -103,11 +103,12 @@ Samuel Albanie
 }
 \date{}
 
+% REMOVE TO FIX COMPILATION
 \hypersetup{
   pdfinfo={
     Title={Classics/Kernels for Applied Computer Vision},
     Author={Samuel Albanie},
-		Subject={Notes on Mathematics},
+        Subject={Notes on Mathematics},
     Keywords={computer vision, differentials, machine learning}
   }
 }
