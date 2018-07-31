@@ -1,0 +1,156 @@
+\appendix
+\chapter{Matrix Manipulation} \label{app:matrices}
+
+\section{Operators}
+
+\subsection{The vec operator}
+
+When working with differentials, much of the complexity of matrix manipulation (and dealing with higher order tensors in general) can be resolved using the $\vv(\cdot)$ operator, which simply lays out the elements of a tensor in column major order.  In this manner, computations can be reduced to operations on vectors (Chap.~\ref{chap:vector}). 
+
+For a concrete example, $\vv(\cdot)$ produces the following result when applied to a $2 \times 3$ matrix $X$:
+
+\begin{align}
+\vv \big(
+\begin{bmatrix}
+  x_{11} & x_{12} & x_{13} \\
+  x_{21} & x_{22} & x_{23}
+\end{bmatrix}
+\big)
+= 
+\begin{bmatrix}
+  x_{11} \\
+  x_{21} \\
+  x_{12} \\
+  x_{22} \\
+  x_{13} \\
+  x_{23} \\
+\end{bmatrix}
+\end{align}
+
+While we express a preference for dealing with tensors using the vec operator, we note that is also perfectly valid to determine derivatives using tensor Jacobians (see e.g. \cite{johnson2017derivatives} for a description of how this can be done in the context of neural networks).
+
+\subsection{Hadamard product}
+
+The Hadamard product of two matrices $A,B \in \real^{m \times n}$ is simply the result of element-wise multiplication between them:
+
+\begin{align*}
+(A \circ B)_{ij} = (A)_{ij} (B)_{ij}
+\end{align*}
+
+
+
+\subsection{Kronecker product}
+
+The Kronecker product of two matrices $A \in \real^{m \times n}$ and $B \in \real^{p \times q}$ is defined to be the $mp \times nq$ block matrix:
+
+\begin{align}
+A \otimes B = (a_{ij} B)
+\end{align}
+
+\subsection{Commutation matrices} \label{subsec:commutation}
+
+Commutation matrices are permutation matrices that re-order vectorised elements.  Given $A \in \real^{m \times n}$, then $K_{mn}$ is the $mn \times mn$ orthogonal matrix such that
+
+\begin{align*}
+  K_{mn}\vv(A) = \vv(A^T)
+\end{align*}
+
+The usefulness of this operator (and the source of its name), is that it allows the two matrices in a Kronecker product to be exchanged (Eqn.~\ref{eqn:commutation}).
+
+\subsection{Khatri-Rao product}
+
+Given structured matrices $E$, $F$ where the submatrix $E_{ij}$ has order $m_i \times n_j$ and submatrix $F_{ij}$ has order $p_i \times q_j$, then the \mbox{\textbf{Khatri-Rao}} product is defined as the Kronecker product of the submatrices:
+
+\begin{align*}
+  E \ast F = (E_{ij} \otimes F_{ij})_{ij}
+\end{align*}
+
+The resulting matrix has order $(\sum_i m_i p_i) \times (\sum_j n_j q_j)$.  For a concrete example, suppose
+
+\begin{align}
+  E = \left[\begin{array}{c|c}
+ E_{11} & E_{12} \\
+ \hline
+ E_{21} & E_{22}
+ \end{array}\right], \quad
+   F = \left[\begin{array}{c|c}
+ F_{11} & F_{12} \\
+ \hline
+ F_{21} & F_{22}
+ \end{array}\right]
+\end{align}
+
+then
+
+\begin{align}
+  E \ast F = \left[\begin{array}{c|c}
+ E_{11} \otimes F_{11} & F_{12} \otimes F_{12} \\
+ \hline
+ E_{21} \otimes F_{21} & F_{22} \otimes F_{22}
+ \end{array}\right]
+\end{align}
+
+This can be further extended to the Tracy-Singh product \cite{tracy1972new}, which generates a new structured matrix by taking the Kronecker product between all possible pairwise blocks combinations.
+
+\section{The diag operator}
+
+The $\diag: \real^d \to \real^{d \times d}$ operator arranges the elements of a vector along the diagonal of a square matrix.  It also has a useful pseudo-inverse \cite{minka2000old}, $\diag^{-1}: \real^{d \times d} \to \real^d$, which takes the elements from the diagonal of a matrix and stacks them into a vector.  Note that this is only a pseudo-inverse, since for any vector $\xx \in \real^d$, $\xx = \diag^{-1}(\diag(\xx))$, but for a square matrix $A \in \real^{d \times d}$, we have $A = \diag^{-1}(\diag(A))$ if and only if $A$ is a diagonal matrix.
+
+\section{Identities}
+
+ Throughout this section, we will assume that $A \in \real^{m \times n}$, $B \in \real^{p \times q}$ and $C \in \real^{r\times s}$.  The following identity comes up frequently when working with matrix differentials:
+
+\begin{align}
+\vv(ABC) = (C^T \otimes A) \vv(B) \label{eqn:veckron}
+\end{align}
+
+As mentioned in Sec. \ref{subsec:commutation}, the usefulness of the commutation matrix $K_{mn}$ lies in the following result \cite{magnus1988matrix}:
+
+\begin{align}
+K_{mp} (A \otimes B) = (B \otimes A) K_{nq}  \label{eqn:commutation}
+\end{align}
+
+We can prove this with the help of Eqn.~\ref{eqn:veckron}. For any matrix $X \in \real^{q \times n}$, we have that
+
+\begin{align*}
+  K_{mp} (A \otimes B) \vv(X) &= K_{mp} \vv(B X A^T) = \vv(A X^T B^T) \\
+                              &= (B \otimes A) \vv(X^T) = (B \otimes A) K_{nq}\vv(X)
+\end{align*}
+
+Since this holds for any $X$, Eqn.~\ref{eqn:commutation} follows. 
+
+There are several useful identities for working with Hadamard products, the $\diag(\cdot)$ and $\diag^{-1}(\cdot)$ (these are from \cite{minka2000old}).  Suppose $E, F \in \real^{m \times n}, \alpha, \beta \in \real$:
+
+\begin{align}
+  \diag(E \circ F) = \diag(E) \circ \diag (F) \label{eqn:diagHadProd}
+\end{align}
+\begin{align}
+  \diag^{-1}(E \circ F) = \diag^{-1}(E) \circ \diag^{-1}(F) \label{eqn:diagInvHadProd}
+\end{align}
+\begin{align}
+  \diag(\alpha E + \beta F) = \alpha \diag(E) + \beta \diag (F) \label{eqn:diagLinear}
+\end{align}
+\begin{align}
+  \diag^{-1}(\alpha E + \beta F) = \alpha \diag^{-1}(E) + \beta \diag^{-1}(F) \label{eqn:diagInvLinear}
+\end{align}
+
+The trace operator can often get you out of a tight spot.  Suppose $X \in \real^{m \times n}$, $Y \in \real^{n \times o}$ and $Z \in \real^{o\times p}$.  Then we can cycle the arguments:
+
+\begin{align*}
+  \tr(XYZ) = \tr(ZXY) = \tr(YZX)
+\end{align*}
+
+We can sum the result of a Hadamard product 
+\begin{align*}
+  \tr(E^TF) = \vv(E)^T\vv(F) = \bone^T \vv(E \circ F)
+\end{align*}
+
+More generally, we have the following relation \cite{minka2000old}:
+
+\begin{align}
+  \tr(E^T F) = \tr((E^*)^T F^*)
+\end{align}
+
+for any operator $(\cdot)^*$ that rearranges the elements of a matrix.
+
+

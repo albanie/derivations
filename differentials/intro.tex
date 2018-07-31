@@ -1,0 +1,17 @@
+\chapter{Introduction}\label{sec:intro}
+
+Calculus plays a central role in computer vision. As the community has integrated ever more closely with techniques from machine learning, statistics and optimisation, the ability to differentiate vector and matrix functions has become more useful to computer vision researchers.  Unfortunately, multivariate calculus, when performed with indices over element locations is a fairly tricky business to build an intuition for.  Although the index-based approach has the majority of the market share in the research world, there is an alternative: the slightly lesser known method of \textit{matrix differentials}.  We have found this alternative approach to be significantly simpler, more intuitive and faster to work with.  
+
+Finally, we note that the widespread adoption of automatic differentiation (autodiff) has been a major boon to the whole community, in many cases obviating the need to perform arduous pen and paper derivations.  The goal of these notes is not to encourage the reader to avoid using autodiff, but to assist them in understanding, on a mathematical level, what is going on \say{under the hood}.
+
+
+\section{Useful Resources}
+
+There are a number of extremely good references for getting to grips with the calculus of vector and matrix functions.  Below are a few that we have found particularly useful, providing much of the material for these notes:
+
+\begin{itemize}
+\item Written by econometricians Magnus and Neudecker (originally in $1988$, but revised several times), \textit{Matrix differential calculus with applications in statistics and econometrics} is the canonical reference for matrix differential calculus~\cite{magnus1988matrix}.
+\item The fundamentals of working with matrices \cite{searle2017matrix}.
+\item \cite{kinghorn1996integrals}, \cite{minka2000old} and \cite{petersen2008matrix} each contain a large number of highly useful results and are good as quick references.
+\item The MatConvNet manual \cite{vedaldi2015matconvnetmanual} provides carefully worked through examples of matrix derivatives.  While the emphasis is primarily on index-based derivations, it provides the derivatives of many common neural network computation blocks in matrix form and is very useful as a reference. 
+\end{itemize}

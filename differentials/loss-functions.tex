@@ -1,0 +1,91 @@
+\chapter{Loss Functions} \label{chap:loss-functions}
+
+Loss functions are scalar functions that commonly require derivatives. 
+
+\section{Cross Entropy}
+
+Cross entropy measures the distance between two distributions by computing the average number bits required to encode symbols drawn from one distribution using the optimal coding scheme of the other. Given discrete distributions, $p$ and $q$, we define the cross entropy between them as:
+
+\begin{align}
+  H[p,q] &= -\sum_{\xx} p(\xx) \log q(\xx) = -\EE_{\xx \sim p} \log q(\xx) \label{eqn:cross-ent}\\
+         &= \underbrace{-\sum_{\xx} p(\xx) \log p(\xx)}_{H[p]} + \underbrace{\sum_{\xx} p(\xx) \log\frac{p(\xx)}{q(\xx)}}_{\text{D}_\text{KL}(p || q)}
+\end{align}
+
+In the machine learning context, we typically cannot evaluate Eqn.\ref{eqn:cross-ent} across the full distribution $p(\xx)$.  Instead, we often have some number (e.g. $m$) of samples, $m$, and the respective probability of each sample under $p$ (the ground truth) and $q$ (the predictions we are trying to match against the ground truth). Stacking the probabilities into vectors $\mathbf{\hat{p}}, \mathbf{\hat{q}} \in \real^m$, we can rewrite Eqn.\ref{eqn:cross-ent} as the loss corresponding to $m$ samples as $\mathbf{\hat{p}}^T \log [\mathbf{\hat{q}}]$ (here we have made use of the element-wise $\log[\cdot]$ operator notation).  As before, we compute differentials:
+
+\begin{align*}
+\dd H = \dd (\mathbf{\hat{p}}^T \log [\mathbf{\hat{q}}]) = \underbrace{\mathbf{\hat{p}}^T}_{1\times n} \underbrace{\diag(\mathbf{\hat{q}})^{-1}}_{n \times n} \underbrace{\dd \mathbf{\hat{q}}}_{n \times 1}
+\end{align*}
+
+(where we have used Eqn.\ref{eqn:eltwise-differentials} for the last equality), so the gradient with respect to the predicted distribution across samples is $\nabla_{\mathbf{\hat{q}}} H = \diag(\mathbf{\hat{q}})^{-1} \mathbf{\hat{p}}$.
+
+\section{Binary Logistic Regression}
+
+Logistic regression is a common tool for learning a binary classifier (the problem setup described here is based on \cite{defreitas}).  The loss is often optimised with IRLS (Iterative Reweighted Least Squares), which requires not only the gradient, but also the hessian of the loss w.r.t the parameters.  We will perform the derivations with differentials.  Suppose that we are given $n$ training pairs $\{\xx_i, y_i\}_{i=1}^n$ consisting of observations $\xx_i \in \real^d$ and labels $y_i \in \real$, and would like to find the parameters $\pmb{\theta} \in \real^d$ that maximise the likelihood of the labels conditioned on the observations under a Bernoulli model:
+
+\begin{align*}
+  p( \yy | X, \mathbf{\theta}) = \prod_{i=1}^n \text{Ber}(y_i| \sigma(\xx_i^T \pmb{\theta}))
+\end{align*}
+
+where we have used $X$ to denote the $d \times n$ matrix formed by stacking the observations as columns and $\yy \in \real^{n} $ as a column vector formed from the labels.  Rather than maximising likelihood, we find $\ththeta$ by minimising the negative log-likelihood:
+
+\begin{align*}
+  \mathcal{L}(\ththeta) = - \sum_{i =1}^n y_i \log \sigma(\xx_i^T\ththeta) + (1 - y_i) \log (1 - \sigma(\xx_i^T \ththeta))
+\end{align*}
+
+We can rewrite this in a more convenient form, again using $[\cdot]$ element-wise operator notation:
+
+\begin{align*}
+  \mathcal{L}(\ththeta) = -\yy^T \log[\sigma[X^T\ththeta]] - (\bone - \yy)^T \log[\bone - \sigma[X^T\ththeta]]
+\end{align*}
+
+To find the gradient, let's write $\pmb{\pi} = \sigma[X^T\ththeta]$, noting that $\dd \pmb{\pi} = \diag(\pmb{\pi}\circ (\bone - \pmb{\pi}))X^T \dd \ththeta$, and take differentials:
+
+\begin{align}
+  \dd \mathcal{L} &= -\yy^T \dd(\log[\pmb{\pi}]) - (\bone - \yy)^T \dd(\log[\bone - \pmb{\pi}]) \\
+                  &= -\yy^T \diag(\pmb{\pi})^{-1}\diag(\pmb{\pi} \circ ( \bone - \pmb{\pi}))X^T \dd \ththeta \nonumber \\
+                  & \quad \quad - (\bone - \yy)^T \diag(\bone - \pmb{\pi})^{-1}\diag(-\pmb{\pi} \circ ( \bone - \pmb{\pi})) X^T \dd \ththeta && \text{(using \ref{eqn:eltwise-differentials})} \\
+                  &= -\yy^T \diag(\bone - \pmb{\pi})X^T \dd \ththeta - (\bone - \yy)^T \diag(-\pmb{\pi}) X^T \dd \ththeta && \text{(using \ref{eqn:diagHadProd})}\\                  
+                  &= \Big(-\yy^T \diag(\bone - \pmb{\pi}) + (\bone - \yy)^T \diag(\pmb{\pi})\Big) X^T \dd \ththeta\\                                    
+                  &= \Big(-\yy^T (I_n - \diag(\pmb{\pi})) + (\bone - \yy)^T \diag(\pmb{\pi})\Big) X^T \dd \ththeta && \text{(using \ref{eqn:diagLinear})}\\                                                      
+                  &= \Big(-\yy^T + (\yy \circ \pmb{\pi})^T + \pmb{\pi}^T - (\yy \circ \pmb{\pi})^T \Big) X^T \dd \ththeta\\                                                                                          
+                  &= ( \pmb{\pi}^T -\yy^T) X^T \dd \ththeta\\                                                                                                            
+\end{align}
+
+thus we see that $\nabla \mathcal{L}(\ththeta) = X ( \pmb{\pi} - \yy) \in \real^n$ (note that to be consistent with the derivations in this document, this differs by a transpose from the derivation in \cite{defreitas}).  Next, we derive the Hessian of the loss by taking the second differential:
+
+\begin{align}
+  \dd^2 \mathcal{L} = \dd (\dd \mathcal{L}) &= \dd(( \pmb{\pi}^T -\yy^T) X^T \dd \ththeta)\\   
+  &= (\dd \pmb{\pi})^T X^T \dd \ththeta\\                                                                                                            
+  &= (\diag(\pmb{\pi}\circ (\bone - \pmb{\pi}))X^T \dd \ththeta)^T X^T \dd \ththeta\\                                                                               
+  &= \dd \ththeta^T X \diag(\pmb{\pi}\circ (\bone - \pmb{\pi})) X^T \dd \ththeta\\                                                                                                                                         
+\end{align}
+
+Since this matrix is symmetric, we can use the second identification theorem \cite{magnus1988matrix} to determine that the Hessian is given by ${\nabla^2 \mathcal{L}(\ththeta) = X \diag(\pmb{\pi}\circ (\bone - \pmb{\pi})) X^T}$
+
+\section{Multinomial Logistic Regression}
+
+Logistic regression can be extended from binary to $k$-way classification by replacing the sigmoid function with a softmax.  Suppose that we have a collection of training pairs $\{\xx_i, \yy_i\}_{i=1}^n$, with each $\xx_i \in \real^d$ and $\yy_i$ a $k$-dimensional one-hot vector (i.e. $\yy_i \in \{0,1\}^k$ and $\bone^T \yy_i = 1$). Then our objective is to optimise a collection of weights $\Theta \in \real^{d \times k}$ to maximise the conditional likelihood of the labels under a multinomial model. Writing $Y$ for the matrix of labels $[\yy_1 | \dots | \yy_n]$, we would like to maximise:
+
+\begin{align*}
+  P(Y | X , \Theta) = \prod_{i=1}^n \text{Mult}(\yy_i|\sigma(\Theta^T\xx_i))
+\end{align*}
+
+Here, the notation indicates that the softmax is operating column-wise (as discussed in Sec.\ref{sec:softmax}).  As previously, we will optimise $\Theta$ by minimising the negative log-likelihood:
+
+\begin{align*}
+  \mathcal{L}(\Theta) &= -\sum_{i=1}^n \underbrace{\yy_i^T}_{1 \times k} \underbrace{\log[\sigma(\Theta^T\xx_i)]}_{k \times 1} \\
+   &= \underbrace{\vphantom{[}\bone^T}_{1 \times n} \underbrace{\vphantom{[}Y^T}_{n \times k} \underbrace{\log[\sigma(\Theta^T X)]}_{k \times n} \underbrace{\vphantom{[}\bone}_{n \times 1} 
+\end{align*}
+
+where the dimension of each matrix has been listed beneath each equation (recall that $\log[\cdot]$ is an element-wise operator).  To keep the notation concise, we will use $\Pi$ to denote the $ k \times n$ matrix $\sigma[\Theta^T X]$, noting that from Eqn.~\ref{eqn:matrixSoftmaxDiff} that ${\dd \vv(\Pi) = \diag(\Pi) - (I_n \otimes \bone \bone^T) \circ (\Pi\Pi^T)} X^T \dd \vv(\Theta)$.
+
+\samsays{Need to rewrite this in terms of traces}
+
+\begin{align}
+\dd \mathcal{L}(\Theta) &= \dd (\bone^T Y^T \log[\Pi] \bone) \\
+&= \bone^T Y^T \dd(\log[\Pi]) \bone\\
+&= \bone^T Y^T \diag(\Pi)^{-1} \dd(\Pi) \bone\\
+&= \bone^T Y^T \diag(\Pi)^{-1} (\diag(\Pi) - (I_n \otimes \bone \bone^T) \circ (\Pi\Pi^T) X^T) \dd \Theta  \bone\\
+&= \bone^T Y^T (I_{kn} - \diag(\Pi)^{-1} (I_n \otimes \bone \bone^T) \circ (\Pi\Pi^T) X^T) \dd \Theta  \bone
+\end{align}

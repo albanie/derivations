@@ -1,0 +1,15 @@
+*.aux
+.texpadtmp/
+*.bbl
+*.blg
+*.tar.gz
+*.toc
+*.out
+*.log
+*synctex.gz
+
+# avoid passing the pdfs
+*main.pdf
+
+# python src
+*.pyc

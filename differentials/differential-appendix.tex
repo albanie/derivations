@@ -1,0 +1,53 @@
+\chapter{Differentials} \label{app:differentials}
+
+The core idea behind differentials is based on examining the Taylor expansion of a function about a certain location. For a rigorous treatment of the topic, see \cite{magnus1988matrix}.  In this section, we give a brief overview.
+
+\section{Scalar functions}
+
+Recall that for a scalar function $f: \real \to \real$, we can define the derivative at a point $p$ by the following limit, subject to the condition that this limit exists:
+
+\begin{align*}
+  f'(p) = \lim_{h\to 0}\frac{f(p + h) - f(p)}{h} 
+\end{align*}
+
+However, we note that by using Taylor's theorem, we can also pursue an equivalent formulation:
+
+\begin{align}
+  f(p + h) = f(p) + \underbrace{h f'(p)}_{\text{linear in $h$}} + r_p(h) \label{eqn:taylorFirst}
+\end{align}
+
+which comprises an affine map $f(p) + h f'(p)$ (i.e. an offset and a linear component) and a final term $r_p(h)$ that is dominated by $h$:
+
+\begin{align}
+  \lim_{h\to 0} \frac{r_p(h)}{h} = 0
+\end{align}
+
+We define the \textit{differential} of $f$ at $p$ with increment $h$ to be the component in Eqn.~\ref{eqn:taylorFirst} that is linear in $h$:
+
+\begin{align}
+  {\dd} f (p ; h) = h f'(p)
+\end{align}
+
+\section{Vector functions}
+
+The same logic can be applied directly to vector functions~\cite{magnus1988matrix}.  Given a vector function $\phi: \real^n \to \real^m$ and that there exists some matrix $A$ such that at a point $\pp \in \real^n$
+
+\begin{align}
+  \phi(\pp + \hh) =   \phi(\pp) + \underbrace{A(\pp)}_{m \times n}\hh + r_\pp(\hh)
+\end{align}
+
+where $r_\pp(\hh)$ satisfies the condition
+
+\begin{align*}
+  \lim_{\hh\to 0} \frac{r_p(\hh)}{||\hh||} = 0
+\end{align*}
+
+then we state that the function is differentiable at $p$ with first derivative $A(\pp)$ and define
+
+\begin{align}
+  \dd \phi(p ; \hh) = A(\pp)\hh \label{eqn:vecDifferential}
+\end{align}
+
+to be the first differential of $\phi$ at $\pp$ with increment $\hh$.
+
+
