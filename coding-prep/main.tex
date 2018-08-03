@@ -1,0 +1,147 @@
+\documentclass[11pt,openany]{memoir}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage[margin=2.5cm]{geometry}
+%\usepackage{tikz}
+%\usetikzlibrary{positioning,calc,matrix,arrows}
+%\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{fancyvrb}
+\usepackage{array}
+\usepackage{dirtytalk}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+
+% NOTE: This template is based on the MatConvNet manual written by Andrea Vedaldi, Karel Lenc and Ankush Gupta.
+
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\xx}{\mathbf{x}}
+\newcommand{\yy}{\mathbf{y}}
+\newcommand{\pp}{\mathbf{p}}
+\newcommand{\hh}{\mathbf{h}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\FF}{\mathcal{F}}
+\newcommand{\ththeta}{\pmb{\theta}}
+\newcommand{\EE}{\mathbb{E}}
+\DeclareMathOperator{\dd}{\text{d}}
+\newcommand{\vv}{\operatorname{vec}}
+\newcommand{\tr}{\operatorname{tr}}
+%\newcommand{\matconvnet}{\textsc{MatConvNet}\xspace}
+%\newcommand{\matlab}{\textsc{MATLAB}\xspace}
+%\newcommand{\cpp}{C{}\texttt{++}~}
+%\newcommand{\by}{\mathbf{y}}
+%\newcommand{\bc}{\mathbf{c}}
+%\newcommand{\bz}{\mathbf{z}}
+%\newcommand{\bff}{\mathbf{f}}
+%\newcommand{\bg}{\mathbf{g}}
+%\newcommand{\br}{\mathbf{r}}
+%\newcommand{\bw}{\mathbf{w}}
+%\newcommand{\bp}{\mathbf{p}}
+%\newcommand{\bfs}{\mathbf{s}}
+%\newcommand{\bfe}{\mathbf{e}}
+%\newcommand{\samsays}[1]{\textcolor{RubineRed}{[S: #1]}}
+
+%\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+%\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+%\newcommand{\sign}{\operatornamewithlimits{sign}}
+%
+%\tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
+%\tikzstyle{data} = []
+%\tikzstyle{datac} = [draw, circle, minimum height=2.5em, minimum width=2.5em,inner sep=3pt,font=\footnotesize]
+%\tikzstyle{par} = [draw, circle, minimum height=2.5em, minimum width=2.5em,fill=black!20,inner sep=3pt,font=\footnotesize]
+%\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+%\tikzstyle{to} = [->,>=stealth',shorten >=1pt,semithick]
+%\tikzstyle{from} = [<-,>=stealth',shorten >=1pt,semithick]
+%\tikzstyle{bp} = [draw=blue,text=blue]
+%\tikzstyle{bpl} = [draw=blue!40]
+%\tikzstyle{bpe} = [text=blue,draw=none]
+
+\VerbatimFootnotes
+
+\setsecnumdepth{subsection}
+\settocdepth{subsection}
+
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.8,0.8,0.8}
+\lstset{
+	%backgroundcolor=\color{lbcolor},
+	tabsize=4,
+	%rulecolor=,
+	language=matlab,
+	basicstyle=\small,
+	%upquote=true,
+	%columns=fullflexible,
+	%showstringspaces=false,
+	extendedchars=true,
+	%breaklines=false,
+	%prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	%frame=single,
+	%showtabs=false,
+	%showspaces=false,
+	%showstringspaces=false,
+	%identifierstyle=\ttfamily,
+	keywordstyle=\color[rgb]{0,0,1},
+	commentstyle=\itshape\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+%\lstMakeShortInline[columns=fullflexible, breaklines = true,
+% breakatwhitespace = true]!
+
+\title{Coding Prep}
+\author{
+Samuel Albanie
+}
+\date{}
+
+% REMOVE TO FIX COMPILATION
+\hypersetup{
+  pdfinfo={
+    Title={Coding Prep},
+    Author={Samuel Albanie},
+        Subject={Notes on Mathematics},
+    Keywords={computer vision, differentials, machine learning}
+  }
+}
+
+\sloppy
+
+% ------------------------------------------------------------------
+\begin{document}
+% ------------------------------------------------------------------
+
+%\end{document}
+
+\frontmatter
+\maketitle{}
+
+\begin{abstract}
+This is a short collection of resources and exercises that we found useful for coding interview preparation. The goal is to develop it over time and therefore it should be considered a work-in-progress.  Consequently any contributions, feedback or notifications of mistakes are much appreciated\footnote{Feel free to contact me by raising an issue on the github page, submitting a pull request directly (\mbox{\url{https://github.com/albanie/derivations})}}).
+\end{abstract}
+\clearpage
+
+\tableofcontents*
+\clearpage
+
+\mainmatter
+\input{intro}
+\input{problems}
+\input{solutions}
+\input{data-structures}
+\input{algorithms}
+
+% ------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/refs.bib}
+\end{document}
+% ------------------------------------------------------------------
+
