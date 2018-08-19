@@ -45,7 +45,7 @@ c(\mathbf{x}) = \sum_{j=1} w_j \max \{ \langle \mathbf{a}, \mathbf{x} \rangle - 
 
 \papersays{It is now easy to see that $c$ can be expressed by a depth $2$ network with ReLU activations.} \\
 
-The questions I had here were: (1) How do we pick the values of $\ba$ to get the desired behaviour in matrix $A$ and (2) What does the shape of the network look like? \\
+After the sentence above, there is an explanation in the original paper.  The questions I had here were: (1) How do we pick the values of $\ba$ to get the desired behaviour in matrix $A$ and (2) What does the shape of the network look like? \\
 
 Let's first work out (1), i.e. how to construct the vector $\ba \in \real^d$. We need to project each $d$-dimensional sample $\xx_i$ to a scalar $x_i$ such that we get a sequence $x_1 < x_2 < \dots < x_n$. Once we've done this, we can just choose n  scalar values $\{b_i: i \in \{1, \dots, n\}\}$ by picking each $b_i \in (x_{i-1}, x_i)$ to get the interleaved sequences.  One way to do the projection is to first arrange the samples $\{ x_i \}_{i=1}^n$ so that they are ordered in increasing order lexicographically (i.e. order the element by the first dimension, then break any ties using the second dimension, then the third etc.).  Then take $k$ to be the maximum absolute scalar value that appears in any of the dimensions of any of the samples ($k = \max_s \max_j |x_s^j|$, where $j$ indexes the dimension and $s$ indexes the sample number). Then we can define $\ba = (k^0, \dots, k^{d-1})^T \in \real^d$, so that $x_i = \ba^\xx_i$ produces an increasing sequence.
 
@@ -53,6 +53,7 @@ For (2), define a vector $\mathbf{y} \in \real^n$ containing the target value fo
 
 % Based on Andrea's diagrams
 
+\begin{figure}
 \begin{center}
 \begin{tikzpicture}[auto, node distance=2cm]
 \node (x0)  [data] {$\xx_i^{(0)}\in\real^d$};
@@ -63,20 +64,92 @@ For (2), define a vector $\mathbf{y} \in \real^n$ containing the target value fo
 \node (w1) [data, below of=f1] {$\hat{\ba} \in \real^{d \times n}, \mathbf{b} \in \real^n$};
 %\node (w2) [data, below of=f2] {$\ww_2$};
 \node (wL) [data, below of=fL] {$\ww \in \real^n$};
-\node (xL) [data, right of=fL] {$c(\xx)\in\real$};
+\node (cX) [data, right of=fL] {$c(\xx)\in\real$};
 \draw [to] (x0.east) -- (f1.west) {};
 \draw [to] (f1.east) -- node {$\xx_i^{(1)} \in \real^n$} (f2.west);
 \draw [to] (f2.east) -- node {$\xx_i^{(2)} \in \real^n$} (fL.west) {};
 %\draw [to] (dots.east) -- node {$\xx_{L-1}$} (fL.west) {};{
-\draw [to] (fL.east) -- (xL.west) {};
+\draw [to] (fL.east) -- (cX.west) {};
 \draw [to] (w1.north) -- (f1.south) {};
 %\draw [to] (w2.north) -- (f2.south) {};
 \draw [to] (wL.north) -- (fL.south) {};
 \end{tikzpicture}
 \end{center}
-
+\caption{The two layer network for memorising $n$ samples.}
+\end{figure}
 Here the superscript $\xx_i^{(j)}$ just means the output of the $j^{\text{th}}$ layer for input sample $\xx_i$. Here, $f_1(\xx) = \hat{\ba}^T \xx - \bb$ and $f_2(\xx) = \ww^T \xx$.  Although the shape of the matrix $\hat{\ba}$ is $d \times n$, the columns are simply repeats of the vector $\ba$ i.e. $\hat{\ba} = \ba \bone_n^T$ (where we have used $\bone_n \in \real^n$ to denote a column of ones), so that $f_1$ only requires $d + n$, rather than $nd + n$ parameters.  We can now write the function $c(\xx)$ defined in Eqn.~\ref{eqn:target-fn} as:
 
 \begin{align}
 c(\xx) = (f_2 \circ \text{ReLU} \circ f_1) (\xx) = \ww^T(\text{ReLU}(\hat{\ba}^T \xx - \mathbf{b}))
 \end{align}
+
+Next, we can walk through the proof of Corollary 1, which appears next in the paper:
+
+\papersays{\textbf{Corollary 1.} For every $k \geq 2$, there exists a neural network with ReLU activations of depth $k$, width $\mathcal{O}(n/k)$ and $\mathcal{O}(n+d)$ weights that can represent any function on a sample of size $n$ in $d$ dimensions.}
+
+The proof in the paper describes the approach: first, without loss of generality, assume that the outputs of the first layer lie in $[0,1]$ (i.e. using the notation for the two-layer network,  $\forall i x_i \in [0, 1]$.  The basic idea is to split the input space into $b$ intervals and apply the proof from Theorem 1 to each of the intervals.  Then all that remains is to multiplex the outputs of the subnetworks responsible for each interval to create the final architecture.  The resulting architecture is shown in Figure~\ref{fig:k-layers}.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[auto, node distance=2cm]
+% nodes
+\node (x0)  [data] {$\xx_i^{(0)}\in\real^d$};
+\node (f1) [block,right of=x0]{$f_1$};
+\node (relu1) [block,right of=f1,below of=f1, node distance=2cm]{ReLU};
+\node (relu2) [block,right of=relu1, node distance=2cm]{ReLU};
+\node (dots) [right of=relu2,node distance=2cm]{...};
+\node (relub) [block,right of=dots, node distance=2cm]{ReLU};
+\node (f2) [block,below of=relu1,node distance=2cm]{$f_2$};
+\node (f3) [block,below of=relu2,node distance=2cm]{$f_3$};
+\node (dots) [right of=f3,node distance=2cm]{...};
+\node (fbp1) [block,below of=relub,node distance=2cm]{$f_{b+1}$};
+\node (m1) [block,below of=f2,node distance=2cm]{$m_1$};
+\node (relum1) [block,right of=m1,node distance=2cm]{ReLU};
+\node (m2) [block,right of=relum1,node distance=2cm]{$m_2$};
+\node (relum2) [block,right of=m2,node distance=2cm]{ReLU};
+\node (m3) [block,right of=relum2,node distance=2cm]{$m_2$};
+\node (cX) [data, right of=m3] {$c(\xx)\in\real$};
+% arrows
+\draw [to] (x0.east) -- (f1.west) {};
+\draw [to] (f1.east) -- (relu1.north);
+\draw [to] (f1.east) -- (relu2.north);
+\draw [to] (f1.east) -- (relub.north);
+\draw [to] (relu1.south) -- (f2.north);
+\draw [to] (relu2.south) -- (f3.north);
+\draw [to] (relub.south) -- (fbp1.north);
+\draw [to] (f2.south) -- (m1.north);
+\draw [to] (f3.south) -- (m1.north);
+\draw [to] (fbp1.south) -- (m1.north);
+\draw [to] (m1.east) -- (relum1.west) {};
+\draw [to] (relum1.east) -- (m2.west) {};
+\draw [to] (m2.east) -- (relum2.west) {};
+\draw [to] (relum2.east) -- (m3.west) {};
+\draw [to] (m3.east) -- (cX.west) {};
+%
+%\node (w1) [data, below of=f1] {$\hat{\ba} \in \real^{d \times n}, \mathbf{b} \in \real^n$};
+%\node (w2) [data, below of=f2] {$\ww_2$};
+%\node (wL) [data, below of=fL] {$\ww \in \real^n$};
+%\node (xL) [data, right of=fL] {$c(\xx)\in\real$};
+%
+%\draw [to] (f2.south) -- node {$\xx_i^{(1)} \in \real^n$} (fbp1.north);
+%\draw [to] (f2.east) -- node {$\xx_i^{(2)} \in \real^n$} (fL.west) {};
+%\draw [to] (dots.east) -- node {$\xx_{L-1}$} (fL.west) {};{
+%\draw [to] (fL.east) -- (xL.west) {};
+%\draw [to] (w1.north) -- (f1.south) {};
+%\draw [to] (w2.north) -- (f2.south) {};
+%\draw [to] (wL.north) -- (fL.south) {};
+\end{tikzpicture}
+\end{center}
+\caption{The multilayer layer construction. \label{fig:k-layers}}
+\end{figure}
+
+The output of each of the $b$ subnetworks is a scalar, which memorises the labels for the input samples that fall into its assigned interval.  We can use two ReLU layers to construct indicator functions that ensure that the output of the overall network routes input samples from the correct subnetwork.
+
+Suppose that, given some interval $[d, e]$,  we want to create a function $g(x)$ such that $g(x) = x \forall x \in [d, e]$ and $g(x) = 0$ otherwise. We can use the following function:
+
+\begin{align}
+  g(x) = e - \text{ReLU}(e - (\text{ReLU}(x - d) - d))
+\end{align}
+
+By concatenating the outputs of $f_2, f_3, \dots f_{b+1}$ into a $b$ dimensional 
+
