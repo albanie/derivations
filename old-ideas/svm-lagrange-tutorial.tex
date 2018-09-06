@@ -1,0 +1,112 @@
+% more rough notes, should also be excluded
+While this optimisation provides one way to solve for the model parameters, there is an alternative approach based on Lagrangian-duality which can offer better optimisation characteristics for certain problems.  Suppose we have a constrained optimisation problem of the form:
+
+\begin{align}
+\min_{\bw} f(\bw) & \\
+\mbox{\text{s.t }  } &  \mathbf{g}(\bw) \preceq \mathbf{0}_k \in \real^k \\
+\mbox{\text{s.t }  } & \bh(\bw) = \mathbf{0}_l \in \real^l
+\end{align}
+
+here we have encoded a set of $k$ inequalities as a single vector constrain ($\bx \preceq \by$ means that all elements of $\bx$ are less than or equal to all elements of $\by$) and $\mathbf{0}_m \in \real^m$ denotes a column vector of zeros.  We have similarly encoded a set of $l$ equalities as  a single vector equation.  We can solve this problem with the method of Lagrange multipliers, which introduces the generalised Lagrangian, together with additional parameters $\bu \in \real^k$ and $\bv \in \real^l$:
+
+\begin{align}
+\mathcal{L}(\bw, \bu, \bv) = f(\bw) + \bu^T \mathbf{g}(\bw) + \bv^T \mathbf{h}(\bw)
+\end{align}
+
+We can re-write the primal problem as:
+
+\begin{align}
+\theta_{\mathcal{P}}(\bw) = \max_{\bu, \bw, \bu \succeq \mathbf{0}_k} \mathcal{L}(\bw, \bu, \bv)
+\end{align}
+
+If any of the constraints are violated, then this maximisation will take the value $\infty$, otherwise it will take the value $f(\bw)$.  Therefore, our aim is to find the parameters that satisfy the following \textit{min-max} problem:
+
+\begin{align}
+\min_{\bw} \theta_{\mathcal{P}}(\bw) = \min_{\bw} \max_{\bu, \bw, \bu \succeq \mathbf{0}_k} \mathcal{L}(\bw, \bu, \bv)
+\end{align}
+ 
+if we write $p*$ for the solution of this problem, we note that we can also consider the symmetric \say{dual} problem, of the form:
+
+\begin{align}
+d^* = \max_{\bu, \bv} \theta_{\mathcal{D}}(\bu, \bw) = \max_{\bu, \bv, \bu \succeq \mathbf{0}_k} \min_{\bw} \mathcal{L}(\bw, \bu, \bv)
+\end{align}
+
+We know from the \textit{max-min} inequality that $d^* \leq p^*$, with equality only in special cases\footnote{One set of conditions required for equality is given by the first minimax theorem, proved by von Neumann in his seminal paper on game theory in 1928 \cite{neumann1928theorie}.}.  The conditions required for equality are that $f$ and $\mathbf{g}$ are convex, $\mathbf{g}$ is strictly feasible (there exists some $\bw$ for which $\mathbf{g}(\bx, \bw) \prec \mathbf{0}_k$) and $\bh$ is affine. In these cases, we can find a solution $\bw^*, \bu^*, \bv^*$ where $\bw^*$ solves the primal problem and $\bu^*, \bv^*$ solve the dual problem (and $p^* = d^* = \mathcal{L}(\bw^*, \bu^*, \bv^*)$).  Importantly, this solution will satisfy the \textit{Karush-Kuhn-Tucker} (KKT) conditions:
+
+\begin{align}
+\nabla_{\bw} \mathcal{L}(\bw^*, \bu^*, \bv^*) = \, & \mathbf{0} \in \real^d \\
+\nabla_{\bv} \mathcal{L}(\bw^*, \bu^*, \bv^*) = \, & \mathbf{0} \in \real^l \\
+\bu^* \odot \mathbf{g}(\bw^*) = \, & \mathbf{0} \in \real^k \quad \text{(dual complementarity condition)} \label{eqn:dual-complement}\\
+\mathbf{g}(\bw^*) \preceq \, & \mathbf{0} \in \real^k \\
+\bu^* \succeq \, & \mathbf{0} \in \real^k
+\end{align}
+
+The dual complementarity condition indicates that only a subset of the constraints need to be \say{active}, i.e. with $u_i > 0$ for some $i \in \{1, \dots, k\}$.
+
+We can apply this approach directly to the SVMs problem formulation, where:
+
+\begin{align}
+f(\bw) = \frac{1}{2}||\bw||^2 \\
+\mathbf{g}(\bw) = (\mathbf{1} - \by \odot (X^T\bw + b\mathbf{1}_n)) \preceq \mathbf{0}_n \in \real^{n}
+\end{align}
+
+where $\mathbf{1}_n, \mathbf{0}_n \in \real^n$ are column vectors of ones and zeros respectively and we have stacked the training samples into a matrix $X \in \real^{d \times n}$ with labels $\by \in \real^{n}$.  We form the generalised Lagrangian as before, noting that both the objective $f$ and the inequalities encoded in $g$ are convex functions:
+
+\begin{align}
+\mathcal{L}(\bw, \bu) = \frac{1}{2}||\bw||^2 + \bu^T(\mathbf{1}_n - \by \odot (X^T\bw + b\mathbf{1}_n)) \label{eqn:generalised-lagrangian}
+\end{align}
+
+so we know that we can solve for the solution of the primal and dual problems using the KKT conditions.  Using differentials, we can compute the gradient of $\mathcal{L}(\bw^*, \bu^*)$ with respect to $\bw$ as follows:
+
+\begin{align}
+{\dd}\mathcal{L} &= {\dd}\Big(\frac{1}{2}||\bw||^2\Big) + {\dd}\Big((\bu)^T(\mathbf{1}_n - \by \odot (X^T\bw + b\mathbf{1}_n))\Big) \\
+&= \bw^T{\dd}\bw - \bu^T \underbrace{\by \odot X^T {\dd} \bw}_{n \times 1}  \\
+&= \Big(\bw^T - \bu^T \by \odot X^T \Big) {\dd} \bw 
+\end{align}
+
+From which it follows that $\nabla_\bw \mathcal{L}(\bw, \bu) = \bw - X (\by \odot \bu) \in \real^d$.  Applying the first KKT condition (i.e. $\nabla_\bw \mathcal{L}(\bw, \bu) = \mathbf{0}_d$, we have that 
+
+\begin{align}
+\bw^{*} = X (\by \odot \bu) \label{eqn:dual-optimum}
+\end{align}
+
+As a result, the optimal solution for the weights lies in the span of the input samples. We can also take the gradient with respect to $b$ and set to zero to give that $\bu^T \by = 0$.  Plugging the first result back into Eqn.~\ref{eqn:generalised-lagrangian} gives:
+
+\begin{align}
+\mathcal{L}(\bw^*, \bu) = \frac{1}{2}  ||X \by \odot \bu ||^2  + \bu \odot  (\mathbf{1} - \by \odot (X^T X (\by \odot \bu) + b\mathbf{1}_n))
+\end{align}
+
+and we can use that $\bu^T \by = 0$ to cancel the last term:
+
+\begin{align}
+\mathcal{L}(\bw^*, \bu) &= \frac{1}{2} ||X \by \odot \bu ||^2 + \bu \odot  (\mathbf{1} - \by \odot X^T X (\by \odot \bu)) \\
+&= \frac{1}{2} ||X \by \odot \bu ||^2 + \bu - (\by \odot \bu X^T)( X\by \odot \bu) \\
+&= \frac{1}{2} ||X \by \odot \bu ||^2 + \bu - || X\by \odot \bu||^2 \\
+&= \bu - \frac{1}{2} || X\by \odot \bu||^2 
+\end{align}
+
+We see that our derived conditions for solving the dual problem are:
+
+\begin{align}
+\max_{\bu} \mathcal{L}(\bw^*, \bu) &=   \bu - \frac{1}{2} || X\by \odot \bu||^2 \\
+\text{s.t.} \quad & \bu^T \by = 0 \\
+\text{and} \quad & \bu \succeq \mathbf{0}_n
+\end{align}
+
+This is again a convex objective with affine constraints, so we know that the solution of the dual is equivalent to the solution of the primal and therefore we can solve this set of equations instead of the primal problem.  Having found the optimal value of $\bw$, we can also find the optimal value of $b$ by noting that at each \textit{active constraint}, we will have that $g_i(\bw) = 0$ for some $i \in \{1, \dots, n\}$. In these cases, $y_i (\bx_i^T \bw + b) = 1$, so that $(\bx_i^T \bw + b) = 1$ when the target label is $y_i = 1$ and $(\bx_j^T \bw + b) = -1$ when $y_j = -1$. By summing these constraints, we get that $(\bx_j + \bx_i)^T \bw + 2b = 0$ or, to write things more precisely, $b = \frac{1}{2}(\min_{i, y_i = 1} \bx_i^T\bw + \max_{i, y_i = -1} \bx_i^T\bw)$.
+
+\section*{Kernels}
+
+To make predictions with our model $y = \bw^T\bx + b$, we can insert the learned value of $\bw$ (given Eqn.~\ref{eqn:dual-optimum}) to see that:
+
+\begin{align}
+y = \underbrace{(\by^T \odot \bu^T)}_{1 \times n} \underbrace{\vphantom{(} X^T}_{n \times d} \underbrace{\vphantom{(} \bx}_{d \times 1} + b
+\end{align}
+
+so that predictions are simply a weighted sum of inner products between training examples.  The cost of this inner product is $\mathcal{O}(d)$ for each element in the weighted sum. This formulation allows us to exploit the powerful relationship between inner products and positive semi-definite kernels. We know from functional analysis that each Reproducing Kernel Hilbert Space
+
+
+
+
+
+

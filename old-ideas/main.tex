@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{textcomp}
+\usepackage{graphicx}
 \usepackage{fancyvrb}
 \usepackage{array}
 \usepackage{dirtytalk}
@@ -24,10 +25,15 @@
 \newtheorem{lemma}{Lemma}
 
 \newcommand{\real}{\mathbb{R}}
-\newcommand{\xx}{\mathbf{x}}
-\newcommand{\yy}{\mathbf{y}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bv}{\mathbf{v}}
 \newcommand{\pp}{\mathbf{p}}
 \newcommand{\hh}{\mathbf{h}}
+\newcommand{\XX}{\mathcal{X}}
 \newcommand{\diag}{\operatorname{diag}}
 \newcommand{\bone}{\mathbf{1}}
 \newcommand{\FF}{\mathcal{F}}
@@ -49,7 +55,14 @@
 %\newcommand{\bp}{\mathbf{p}}
 %\newcommand{\bfs}{\mathbf{s}}
 %\newcommand{\bfe}{\mathbf{e}}
-%\newcommand{\samsays}[1]{\textcolor{RubineRed}{[S: #1]}}
+\newcommand{\samsays}[1]{\textcolor{RubineRed}{[S: #1]}}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[chapter] % reset theorem numbering for each chapter
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}[thm]{Example} % same for example numbers
 
 %\newcommand{\argmin}{\operatornamewithlimits{argmin}}
 %\newcommand{\argmax}{\operatornamewithlimits{argmax}}
@@ -136,6 +149,11 @@ The goal is to develop it over time and therefore it should be considered a work
 \mainmatter
 \input{intro}
 \input{scale-space}
+
+\appendix
+
+\input{functional-analysis}
+\input{svms}
 
 % ------------------------------------------------------------------
 \bibliographystyle{plain}

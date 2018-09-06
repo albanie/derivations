@@ -1,0 +1,57 @@
+% Keep as rough notes, but do not include in the final copy
+
+In this derivation we assume the data points are linearly separable. Our aim is to pick the parameter values $(\bw, b)$ so as to minimise Eqn.~\ref{eqn:empirical-risk}.  In essence, that means that we should pick these values so that if $y_i = 1$, then our parameters should map $\bx_i$ to a positive value and to a negative value for pairs where $y_i = -1$. For a given choice of $(\bw, b)$ We define the functional margin of $\bx_i$ to be:
+
+\begin{align}
+\hat{\gamma}_i = y_i (\bw^T \bx_i + b) \in \real
+\end{align}
+
+Note that if the example is classified correctly, this margin will be positive. We define the function margin as:
+
+\begin{align}
+\hat{\gamma} = \min_i \hat{\gamma}_i
+\end{align}
+
+We would like to achieve the largest margin possible (this can be viewed as a proxy for better generalisation, where every point is classified correctly \say{safely}).  Next, we introduce a closely related quantity, the \textit{geometric margin} $\gamma_i$ for example pair $(\bx_i, y_i)$, which represents the distance from a training example to the separating hyperplane. We can compute this distance with a bit of simple geometry using the fact that
+
+%\samsays{Add tikz diagram to show the intuition for this formula}
+
+\begin{align}
+\bw^T\Big(\bx_i - \gamma_i y_i \frac{\bw}{ ||\bw ||} \Big) = -b_i
+\end{align}
+
+which rearranges to give:
+
+\begin{align}
+\gamma_i = \frac{y_i}{|| \bw ||}\Big(\bw^T \bx_i + b_i\Big) = \frac{\hat{\gamma}_i}{||\bw||}
+\end{align}
+
+As above, we can also define the geometric margin of the function to be:
+
+\begin{align}
+\gamma = \min_i \gamma_i
+\end{align}
+
+We can now solve the following constrained optimisation to maximise the geometric margin:
+
+\begin{align}
+\max_{\bw, \gamma} \gamma & \\
+\mbox{\text{s.t }  } &  y_i (\bw^T \bw_i + b) \geq \gamma, \quad i \in \{1, \dots, n\} \\
+\mbox{\text{s.t }  } & ||\bw|| = 1
+\end{align}
+
+We are confronted with a slightly tricky issue.  We need the final constraint to prevent the algorithm just blowing up the parameters to solve the problem.  However, by forcing the weights to lie on the edge of a circle, the problem is no longer convex. We can resolve this by maximising the geometric margin, rather than the function margin:
+
+\begin{align}
+\max_{\bw, \hat{\gamma}} \frac{\hat{\gamma}}{||\bw||} & \\
+\mbox{\text{s.t }  } &  y_i (\bw^T \bw_i + b) \geq \hat{\gamma}, \quad i \in \{1, \dots, n\}
+\end{align}
+
+We can apply an arbitrary scaling of the function margin without affecting the classifier, so we constrain the  \textit{function margin} to be $\hat{\gamma} = 1$.  Now, we have the problem
+
+\begin{align}
+\max_{\bw} \frac{1}{||\bw||} & \\
+\mbox{\text{s.t }  } &  y_i (\bw^T \bw_i + b) \geq 1, \quad i \in \{1, \dots, n\}
+\end{align}
+
+Finally we can rewrite this to derive an equivalent maximisation.

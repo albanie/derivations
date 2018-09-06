@@ -1,0 +1,26 @@
+\chapter{Functional Analysis for Kernels} \label{sec:functional-analysis}
+
+This section builds up from basic definitions in functional analysis up to one of the key results (from a computer vision perspective) in this field of mathematics: the equivalence of kernels and inner products between feature maps.   In many cases it is sufficient to just be aware of this result at an intuitive level, without going through the details.  However, since a number of the papers that use kernels in computer vision require some knowledge of functional analysis (using the terminology of Banach spaces, RKHS etc.), having a grasp of the fundamentals can be helpful.  
+
+These notes are based primarily on the material in \cite{sejdinovic2012rkhs}, with additional expansions where noted.  Following \cite{sejdinovic2012rkhs}, all the derivations will assume that vector spaces are defined over $\real$, but can be extended to other fields such as $\mathbb{C}$ if needed.
+
+\section{Banach Spaces}
+
+A Banach space is a vector space with certain topological properties. To describe these properties, we require a way to measure distances between elements in the space, which is provided by a \textit{norm}:
+
+\begin{defn}
+Let $\XX$ be a vector space.  Then $|| \cdot ||_{\XX} : \XX \rightarrow [0,\infty)$ is a called norm on $\XX$ if:
+\begin{enumerate}
+\item $|| \bx ||_{\XX} \geq 0 ,  \forall \bx \in \XX$ and $|| \bx ||_{\XX} = 0  \iff \bx = \mathbf{0}$ (the norm \textit{separates points})
+\item $|| \alpha \bx ||_{\XX} = | \alpha | || \bx ||_{\XX} ,  \forall \bx \in \XX, \forall \alpha \in \real$ (homogeneity)
+\item $ || \bx + \by ||_{\XX} \leq || \bx ||_{\XX} + || \by ||_{\XX}, \forall \bx, \by \in \XX$ (the triangle-inequality)
+\end{enumerate}
+\end{defn}
+
+We can now measure distances between two elements of the space using a metric ${\dd}: \XX \times \XX \to \real$, defined using the norm as follows: ${\dd}(\bx, \by) = || \bx - \by ||_{\XX}$.
+
+\begin{defn}
+We say that a sequence $\{\bx_n\} \subset \XX$ converges to $\bx \in \XX$ if $\forall \epsilon > 0, \exists N \in \mathbb{N}$ such that $|| \bx_m - \bx ||_{\XX} < \epsilon, \forall m > N$.
+\end{defn}
+
+

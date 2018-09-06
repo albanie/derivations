@@ -1,0 +1,43 @@
+\chapter{Support Vector Machines} \label{sec:svms}
+
+Support Vector Machines (SVMs) formed one of the dominant machine learning classification approaches in computer vision for a sustained period of time (late 90s to early 2010s onwards).  They are still widely used for a number of problems (although they often no longer represent the state-of-the-art in cases where large quantities of training data are available).  The overview here is based on the course notes by Andrew Ng \cite{svmsNg}.
+
+The basic ideas of SVMs are easiest to understand in the context of binary classification (although they can be extended to more complex outputs with \textit{structural svms}).   We assume we are given a set of samples $\{\bx_i, y_i\}_{i=1}^n, \bx_i \in \real^d, y_i \in \{-1, 1\}$ drawn i.i.d. from the joint distribution $p(\bx,y)$.  We proceed to learn a model through risk minimisation \cite{vapnik1992principles}, which is to say that we aim to construct a model $f(\bx)$ that minimises the \textit{risk} of $f$ under this distribution:
+
+\begin{align}
+R(f) = \EE[l(f(\bx, \bw), y)] \label{eqn:risk}
+\end{align}
+
+where $\bw$ represent the parameters of the function. In practice, we cannot compute the expectation in Eqn.~\ref{eqn:risk} because we do not have access to the full underlying joint distribution $p(\bx, y)$.  However, since we have assumed that we have access to a handful of samples, we can approximate this quantity by the \textit{empirical risk}:
+
+\begin{align}
+R_{\text{emp}}(f) = \frac{1}{n}\sum_{i=1}^n l(f(\bx_i, \bw), y_i) \label{eqn:empirical-risk}
+\end{align}
+
+For the linear SVM, we formulate our predictive function $f(\bx, \bw)$ as the composition of a simple linear classifier and a thresholding function, $g$:
+
+\begin{align}
+f(\bx, \bw) = g(\bw^Tx + b) \label{eqn:linear-svm}
+\end{align}
+
+Here $b$ is a scalar bias term.  We could have included it directly into the parameter vector $\bw$ as an extra component and appended $1$ to the vector of inputs $\bx$, but for developing an intuition it can be helpful to separate it out.  Technically we should write $f(\bx, \bw, b)$ in the LHS of Eqn.~\ref{eqn:linear-svm}, but we omit the $b$ to keep the notation simpler). The threshold operator $g$ is defined as follows:
+
+\begin{align}
+g(x) =  \begin{cases}
+  \mbox{ 1}, & x \geq 0 \\
+ -1, & x < 0
+ \end{cases} 
+\end{align}
+
+%\input{svm-tutorial} exclude
+
+We can solve for the model parameters by solving the following quadratic program (i.e. a convex, quadratic objective and linear constraints):
+
+\begin{align}
+\min_\bw \frac{1}{2}||\bw||^2 & \\
+\mbox{\text{s.t }  } &  y_i (\bw^T \bx_i + b) \geq 1, \quad i \in \{1, \dots, n\}
+\end{align}
+
+This is now a quadratic program (it has a convex, quadratic objective and linear constraints).
+
+\input{svm-lagrange-tutorial}
