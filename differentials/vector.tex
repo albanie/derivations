@@ -82,7 +82,7 @@ There are also often cases where we would like to apply the softmax operator to 
 \end{array}\right]
 \end{align*}
 
-We can derive the gradient of this operator with respect to an input matrix $X \in \real^{m \times n}$, using the vec operator. This is a little more involved than the previous derivations, so the equations are interspersed with visualisations.  The overall strategy is to reach an expression of the form $\dd \vv(\sigma(X)) = A \dd \vv(X)$ and apply the identification theorem \cite{magnus1988matrix} to read off the Jacobian of the softmax as $A \in \real^{mn \times mn}$.
+We can derive the gradient of this operator with respect to an input matrix $X \in \real^{m \times n}$, using the vec operator. This is a little more involved than the previous derivations, so the equations are interspersed with visualisations.  The overall strategy is to reach an expression of the form $\dd \vv(\sigma(X)) = A \dd \vv(X)$ and apply the identification theorem \citep{magnus1988matrix} to read off the Jacobian of the softmax as $A \in \real^{mn \times mn}$.
 
 \begin{align}
   \dd(\vv(\sigma(X))) &= \dd \big( \left[\begin{array}{c}

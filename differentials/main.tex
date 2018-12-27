@@ -1,4 +1,5 @@
 \documentclass[11pt,openany]{memoir}
+\usepackage[round]{natbib}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -15,7 +16,7 @@
 \usepackage{fancyvrb}
 \usepackage{array}
 \usepackage{dirtytalk}
-\usepackage[colorlinks]{hyperref}
+\usepackage[colorlinks,linkcolor=magenta,citecolor=brown]{hyperref}
 \usepackage{cleveref}
 
 % NOTE: This template is based on the MatConvNet manual written by Andrea Vedaldi, Karel Lenc and Ankush Gupta.
@@ -140,8 +141,8 @@ calculus derivations using the framework of \textit{matrix differentials}. The g
 \input{differential-appendix}
 
 % ------------------------------------------------------------------
-\bibliographystyle{plain}
-\bibliography{../bib/refs.bib}
+\bibliographystyle{plainnat}
+\bibliography{refs.bib}
 \end{document}
 % ------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ In the machine learning context, we typically cannot evaluate Eqn.\ref{eqn:cross
 
 \section{Binary Logistic Regression}
 
-Logistic regression is a common tool for learning a binary classifier (the problem setup described here is based on \cite{defreitas}).  The loss is often optimised with IRLS (Iterative Reweighted Least Squares), which requires not only the gradient, but also the hessian of the loss w.r.t the parameters.  We will perform the derivations with differentials.  Suppose that we are given $n$ training pairs $\{\xx_i, y_i\}_{i=1}^n$ consisting of observations $\xx_i \in \real^d$ and labels $y_i \in \real$, and would like to find the parameters $\pmb{\theta} \in \real^d$ that maximise the likelihood of the labels conditioned on the observations under a Bernoulli model:
+Logistic regression is a common tool for learning a binary classifier (the problem setup described here is based on \citep{defreitas}).  The loss is often optimised with IRLS (Iterative Reweighted Least Squares), which requires not only the gradient, but also the hessian of the loss w.r.t the parameters.  We will perform the derivations with differentials.  Suppose that we are given $n$ training pairs $\{\xx_i, y_i\}_{i=1}^n$ consisting of observations $\xx_i \in \real^d$ and labels $y_i \in \real$, and would like to find the parameters $\pmb{\theta} \in \real^d$ that maximise the likelihood of the labels conditioned on the observations under a Bernoulli model:
 
 \begin{align*}
   p( \yy | X, \mathbf{\theta}) = \prod_{i=1}^n \text{Ber}(y_i| \sigma(\xx_i^T \pmb{\theta}))
@@ -52,7 +52,7 @@ To find the gradient, let's write $\pmb{\pi} = \sigma[X^T\ththeta]$, noting that
                   &= ( \pmb{\pi}^T -\yy^T) X^T \dd \ththeta\\                                                                                                            
 \end{align}
 
-thus we see that $\nabla \mathcal{L}(\ththeta) = X ( \pmb{\pi} - \yy) \in \real^n$ (note that to be consistent with the derivations in this document, this differs by a transpose from the derivation in \cite{defreitas}).  Next, we derive the Hessian of the loss by taking the second differential:
+thus we see that $\nabla \mathcal{L}(\ththeta) = X ( \pmb{\pi} - \yy) \in \real^n$ (note that to be consistent with the derivations in this document, this differs by a transpose from the derivation in \citep{defreitas}).  Next, we derive the Hessian of the loss by taking the second differential:
 
 \begin{align}
   \dd^2 \mathcal{L} = \dd (\dd \mathcal{L}) &= \dd(( \pmb{\pi}^T -\yy^T) X^T \dd \ththeta)\\   
@@ -61,7 +61,7 @@ thus we see that $\nabla \mathcal{L}(\ththeta) = X ( \pmb{\pi} - \yy) \in \real^
   &= \dd \ththeta^T X \diag(\pmb{\pi}\circ (\bone - \pmb{\pi})) X^T \dd \ththeta\\                                                                                                                                         
 \end{align}
 
-Since this matrix is symmetric, we can use the second identification theorem \cite{magnus1988matrix} to determine that the Hessian is given by ${\nabla^2 \mathcal{L}(\ththeta) = X \diag(\pmb{\pi}\circ (\bone - \pmb{\pi})) X^T}$
+Since this matrix is symmetric, we can use the second identification theorem \citep{magnus1988matrix} to determine that the Hessian is given by ${\nabla^2 \mathcal{L}(\ththeta) = X \diag(\pmb{\pi}\circ (\bone - \pmb{\pi})) X^T}$
 
 \section{Multinomial Logistic Regression}
 

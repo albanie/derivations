@@ -90,11 +90,11 @@ then
  \end{array}\right]
 \end{align}
 
-This can be further extended to the Tracy-Singh product \cite{tracy1972new}, which generates a new structured matrix by taking the Kronecker product between all possible pairwise blocks combinations.
+This can be further extended to the Tracy-Singh product \citep{tracy1972new}, which generates a new structured matrix by taking the Kronecker product between all possible pairwise blocks combinations.
 
 \section{The diag operator}
 
-The $\diag: \real^d \to \real^{d \times d}$ operator arranges the elements of a vector along the diagonal of a square matrix.  It also has a useful pseudo-inverse \cite{minka2000old}, $\diag^{-1}: \real^{d \times d} \to \real^d$, which takes the elements from the diagonal of a matrix and stacks them into a vector.  Note that this is only a pseudo-inverse, since for any vector $\xx \in \real^d$, $\xx = \diag^{-1}(\diag(\xx))$, but for a square matrix $A \in \real^{d \times d}$, we have $A = \diag^{-1}(\diag(A))$ if and only if $A$ is a diagonal matrix.
+The $\diag: \real^d \to \real^{d \times d}$ operator arranges the elements of a vector along the diagonal of a square matrix.  It also has a useful pseudo-inverse \citep{minka2000old}, $\diag^{-1}: \real^{d \times d} \to \real^d$, which takes the elements from the diagonal of a matrix and stacks them into a vector.  Note that this is only a pseudo-inverse, since for any vector $\xx \in \real^d$, $\xx = \diag^{-1}(\diag(\xx))$, but for a square matrix $A \in \real^{d \times d}$, we have $A = \diag^{-1}(\diag(A))$ if and only if $A$ is a diagonal matrix.
 
 \section{Identities}
 
@@ -104,7 +104,7 @@ The $\diag: \real^d \to \real^{d \times d}$ operator arranges the elements of a 
 \vv(ABC) = (C^T \otimes A) \vv(B) \label{eqn:veckron}
 \end{align}
 
-As mentioned in Sec. \ref{subsec:commutation}, the usefulness of the commutation matrix $K_{mn}$ lies in the following result \cite{magnus1988matrix}:
+As mentioned in Sec. \ref{subsec:commutation}, the usefulness of the commutation matrix $K_{mn}$ lies in the following result \citep{magnus1988matrix}:
 
 \begin{align}
 K_{mp} (A \otimes B) = (B \otimes A) K_{nq}  \label{eqn:commutation}
@@ -145,7 +145,7 @@ We can sum the result of a Hadamard product
   \tr(E^TF) = \vv(E)^T\vv(F) = \bone^T \vv(E \circ F)
 \end{align*}
 
-More generally, we have the following relation \cite{minka2000old}:
+More generally, we have the following relation \citep{minka2000old}:
 
 \begin{align}
   \tr(E^T F) = \tr((E^*)^T F^*)
