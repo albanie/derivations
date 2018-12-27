@@ -16,3 +16,4 @@
 
 old-ideas/.build/
 differentials/.build/
+*.DS_Store
